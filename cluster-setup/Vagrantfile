@@ -1,0 +1,51 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
+Vagrant.configure(2) do |config|
+
+
+  # Kubernetes Master Server
+  config.vm.define "cks-master" do |node|
+  
+    node.vm.box               = "generic/ubuntu2004"
+    node.vm.box_check_update  = false
+    node.vm.box_version       = "3.3.0"
+    node.vm.hostname          = "cks-master"
+	node.vm.disk :disk, name: "backup", size: "10GB"
+
+    node.vm.network "private_network", ip: "192.168.5.101"
+  
+    node.vm.provider :virtualbox do |v|
+      v.name    = "cks-master"
+      v.memory  = 4096
+      v.cpus    =  2
+	  
+    end
+  
+  
+  end
+
+
+  # Kubernetes Worker Nodes
+
+    config.vm.define "cks-worker" do |node|
+
+      node.vm.box               = "generic/ubuntu2004"
+	  node.vm.disk :disk, name: "backup", size: "10GB"
+      node.vm.box_check_update  = false
+      node.vm.box_version       = "3.3.0"
+      node.vm.hostname          = "cks-worker"
+
+      node.vm.network "private_network", ip: "192.168.5.102"
+
+      node.vm.provider :virtualbox do |v|
+        v.name    = "cks-worker"
+        v.memory  = 4096
+        v.cpus    = 2
+      end
+
+  end
+
+end
